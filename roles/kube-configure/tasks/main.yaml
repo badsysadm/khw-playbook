@@ -20,6 +20,15 @@
     mode: 0644
 - name: apply coreos yaml
   command: kubectl apply -f /tmp/coredns.yaml
+- name: copy netroutes yaml
+  template:
+    src: netroutes.yaml.j2
+    dest: /tmp/netroutes.yaml
+    owner: root
+    group: root
+    mode: 0644
+- name: apply netroutes yaml
+  command: kubectl apply -f /tmp/netroutes.yaml
 - command: kubectl delete ns helm
   ignore_errors: yes
 - name: create namespace for helm
