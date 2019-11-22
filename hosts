@@ -1,1 +1,2 @@
-kube-m03 ansible_user=root ansible_host=192.168.80.192 ansible_port=22
+kw110-21.arch ansible_user=root ansible_host=10.120.110.21 ansible_port=22 KHW_NET_CIDR=10.5.0.0 KHW_NET_CIDR_MASK=16
+kw110-25.arch ansible_user=root ansible_host=10.120.110.25 ansible_port=22 KHW_NET_CIDR=10.6.0.0 KHW_NET_CIDR_MASK=16
