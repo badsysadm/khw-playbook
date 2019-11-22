@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: netroutes
+  namespace: kube-system
+  labels:
+    k8s-app: netroutes
+spec:
+  selector:
+    matchLabels:
+      name: netroutes
+  template:
+    metadata:
+      labels:
+        name: netroutes
+    spec:
+      hostNetwork: true
+      containers:
+      - name: netroutes
+        command:
+        - /bin/bash
+        - -c
+        - /bin/netroutes.sh
+        image: badsysadm/kubectl:latest
+        securityContext:
+          capabilities:
+            add: ["NET_ADMIN"]
+        volumeMounts:
+        - name: cni
+          mountPath: /mnt
+          readOnly: true
+        - name: kubeconfig
+          mountPath: /etc/kubernetes
+          readOnly: true
+        - mountPath: /bin/netroutes.sh
+          name: netroutes-bin
+          subPath: netroutes.sh
+      volumes:
+      - name: cni
+        hostPath:
+          path: /etc/cni/net.d/
+      - name: kubeconfig
+        hostPath:
+          path: /etc/kubernetes
+      - configMap:
+          defaultMode: 0555
+          name: netroutes-bin
+        name: netroutes-bin
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netroutes-bin
+  namespace: kube-system
+data:
+  netroutes.sh: |
+    function addRoutes {
+      MY_NET=$(cat /mnt/10-bridge.conf | jq -r '.ipam.ranges[][].subnet')
+      echo "My net is $MY_NET"
+      for i in $(kubectl get pods -l name=netroutes -o json | jq -r '.items[].metadata.name'); do
+        HOST_IP=$(kubectl get pods $i -o json | jq -r '.status.hostIP')
+        POD_NET=$(kubectl exec $i cat /mnt/10-bridge.conf | jq -r '.ipam.ranges[][].subnet')
+        if [ "$POD_NET" != "$MY_NET" ]; then
+            echo "ip route add ${POD_NET} via ${HOST_IP} dev ens192"
+            ip route add ${POD_NET} via ${HOST_IP} dev ens192
+        else
+            echo "$MY_NET is my net. Do nothing"
+        fi
+      done
+      echo "Done"
+    }
+
+    mkdir -p ~/.kube
+    cp /etc/kubernetes/admin.kubeconfig ~/.kube/config
+    while true; do echo "Now is $(date)"; addRoutes; sleep 3600; done
