@@ -2,8 +2,17 @@
 Description=Kubernetes Kube Proxy
 Documentation=https://github.com/kubernetes/kubernetes
 [Service]
+ExecStartPre=/usr/sbin/modprobe nf_conntrack
+ExecStartPre=/usr/sbin/modprobe br_netfilter
 ExecStart={{ KHW_PREFIX }}bin/kube-proxy \
   --config={{ KHW_CONFIG }}kube-proxy.yaml
+ExecStopPost=/usr/sbin/iptables -t mangle -F
+ExecStopPost=/usr/sbin/iptables -t mangle -X
+ExecStopPost=/usr/sbin/iptables -t nat -F
+ExecStopPost=/usr/sbin/iptables -t nat -X
+ExecStopPost=/usr/sbin/iptables -F
+ExecStopPost=/usr/sbin/iptables -X
+
 Restart=on-failure
 RestartSec=5
 [Install]
