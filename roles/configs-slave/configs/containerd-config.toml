@@ -9,3 +9,7 @@
       runtime_type = "io.containerd.runtime.v1.linux"
       runtime_engine = "{{ KHW_PREFIX }}bin/runsc"
       runtime_root = "/run/containerd/runsc"
+{% if ( (KHW_UNSECURE_REGISTRY is defined) and (KHW_UNSECURE_REGISTRY != "")) %}
+    [plugins.cri.registry.mirrors."local.insecure-registry.io"]
+      endpoint = [" {{ KHW_UNSECURE_REGISTRY }}"]
+{% endif %}

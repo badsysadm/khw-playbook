@@ -2,5 +2,7 @@
   include: gen_configs.yaml
 - name: create services
   include: gen_services.yaml
+- name: get cert for unsecure regisrty in containerd
+  include: gen_unsecure_registry.yaml
 - name: start services
   include: start_services.yaml
