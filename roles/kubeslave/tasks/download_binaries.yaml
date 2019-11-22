@@ -28,12 +28,20 @@
     remote_src: yes
     mode: 0755
 
+- name: ansible create directory for cfssl (ebany macos)
+  file:
+    path: "{{ KHW_PREFIX }}tmp/containerd/"
+    state: directory
+
 - name: downlad containerd
   unarchive:
     src: https://github.com/containerd/containerd/releases/download/v{{ CONTAINERD_VERSION }}/containerd-{{ CONTAINERD_VERSION }}.linux-amd64.tar.gz
-    dest: "{{ KHW_PREFIX }}"
+    dest: "{{ KHW_PREFIX }}tmp/containerd/"
     remote_src: yes
     mode: 0755
+
+- name: copy containerd bin
+  raw: cp -vf {{ KHW_PREFIX }}tmp/containerd/bin/* {{ KHW_PREFIX }}bin/
 
 - name: download kube-proxy
   get_url:
