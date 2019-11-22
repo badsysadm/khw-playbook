@@ -7,4 +7,22 @@
 - name: modprobe
   shell: modprobe br_netfilter
 
+- sysctl:
+    name: vm.oom_kill_allocating_task
+    value: '2'
+    state: present
 
+- sysctl:
+    name: vm.oom_dump_tasks
+    value: '1'
+    state: present
+
+- sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: '1'
+    state: present
+
+- sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: '1'
+    state: present
