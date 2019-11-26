@@ -60,18 +60,22 @@ data:
       MY_NET=$(cat /mnt/10-bridge.conf | jq -r '.ipam.ranges[][].subnet')
       echo "My net is $MY_NET"
       for i in $(kubectl get pods -l name=netroutes -o json | jq -r '.items[].metadata.name'); do
-        HOST_IP=$(kubectl get pods $i -o json | jq -r '.status.hostIP')
-        POD_NET=$(kubectl exec $i cat /mnt/10-bridge.conf | jq -r '.ipam.ranges[][].subnet')
-        if [ "$POD_NET" != "$MY_NET" ]; then
-            echo "ip route add ${POD_NET} via ${HOST_IP} dev ens192"
-            ip route add ${POD_NET} via ${HOST_IP} dev ens192
-        else
-            echo "$MY_NET is my net. Do nothing"
-        fi
+          if kubectl exec $i cat /mnt/10-bridge.conf > /dev/null; then
+              HOST_IP=$(kubectl get pods $i -o json | jq -r '.status.hostIP')
+              POD_NET=$(kubectl exec $i cat /mnt/10-bridge.conf | jq -r '.ipam.ranges[][].subnet')
+              if [ "$POD_NET" != "$MY_NET" ]; then
+                  ip route add ${POD_NET:-ty_pidor} via ${HOST_IP:-ty_vse_esche_pidor} dev ens192
+                  echo "ip route add ${POD_NET:-ty_pidor} via ${HOST_IP} dev ens192"
+              else
+                  echo "$MY_NET is my net. Do nothing"
+              fi
+          else
+              echo "Failed to connect: $i"
+          fi
       done
       echo "Done"
     }
 
     mkdir -p ~/.kube
     cp /etc/kubernetes/admin.kubeconfig ~/.kube/config
-    while true; do echo "Now is $(date)"; addRoutes; sleep 3600; done
+    while true; do echo "Now is $(date)"; addRoutes; sleep 60; done
