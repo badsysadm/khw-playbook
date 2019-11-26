@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: netdata
+  namespace: netdata
+  labels:
+    k8s-app: netdata
+spec:
+  selector:
+    matchLabels:
+      name: netdata
+  template:
+    metadata:
+      labels:
+        name: netdata
+    spec:
+      hostNetwork: true
+      containers:
+      - name: netdata
+        image: netdata/netdata
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        ports:
+        - containerPort: 19999
+        securityContext:
+          capabilities:
+            add: ["SYS_PTRACE"]
+        volumeMounts:
+        - name: passwd
+          mountPath: /host/etc/passwd
+          readOnly: true
+        - name: group
+          mountPath: /host/etc/group
+          readOnly: true
+        - name: proc
+          mountPath: /host/proc
+          readOnly: true
+        - name: sys
+          mountPath: /host/sys
+          readOnly: true
+        - name: containers
+          mountPath: /var/run/docker.sock
+          readOnly: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: passwd
+        hostPath:
+          path: /etc/passwd
+      - name: group
+        hostPath:
+          path: /etc/group
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: containers
+        hostPath:
+          path: /run/containerd/containerd.sock
