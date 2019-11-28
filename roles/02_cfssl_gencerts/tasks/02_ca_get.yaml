@@ -2,6 +2,7 @@
     path: "{{ KHW_CA }}"
     state: directory
     mode: 0755
+
 - name: Get CA
   copy:
     src: "{{ KHW_LOCAL_CFSSL }}ca/ca.pem"
@@ -9,6 +10,7 @@
     owner: root
     group: root
     mode: 0644
+
 - name: Get CA key
   copy:
     src: "{{ KHW_LOCAL_CFSSL }}ca/ca-key.pem"
@@ -16,6 +18,7 @@
     owner: root
     group: root
     mode: 0644
+
 - name: Get CA config
   copy:
     src: "{{ KHW_LOCAL_CFSSL }}ca/ca-config.json"
@@ -23,3 +26,29 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Get CA for CentOS
+  copy:
+    src: "{{ KHW_LOCAL_CFSSL }}ca/ca.pem"
+    dest: "/etc/pki/ca-trust/source/anchors/kubernetes.crt"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_facts['distribution'] == "CentOS"
+
+- name: Get CA for Debian
+  copy:
+    src: "{{ KHW_LOCAL_CFSSL }}ca/ca.pem"
+    dest: "/usr/local/share/ca-certificates/kubernetes.crt"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_facts['distribution'] == "Debian"
+
+- name: Update trusted CA for Debian
+  shell: update-ca-certificates
+  when: ansible_facts['distribution'] == "Debian"
+
+- name: Update trusted CA for CentOS
+  shell: update-ca-trust force-enable && update-ca-trust extract
+  when: ansible_facts['distribution'] == "CentOS"

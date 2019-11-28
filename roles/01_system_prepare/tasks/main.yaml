@@ -40,6 +40,7 @@
     - socat
     - conntrack
     - ipset
+    - ca-certificates
   when: ansible_facts['distribution'] == "Debian"
 
 - name: Install packages for yum
@@ -52,6 +53,7 @@
     - socat
     - conntrack
     - ipset
+    - ca-certificates
   when: ansible_facts['distribution'] == "CentOS"
 
 - name: Install packages for deb
