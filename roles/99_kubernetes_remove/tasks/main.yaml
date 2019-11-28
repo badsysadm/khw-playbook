@@ -1,0 +1,26 @@
+- name: stop systemd node service
+  systemd:
+    name: '{{ item }}'
+    daemon_reload: yes
+    state: stopped
+    enabled: no
+  with_items: [ 'containerd.service', 'kube-proxy.service', 'kubelet.service' ]
+
+- name: stop systemd master service
+  systemd:
+    name: '{{ item }}'
+    daemon_reload: yes
+    state: stopped
+    enabled: no
+  with_items: [ 'kube-apiserver.service', 'kube-scheduler.service', 'kube-controller-manager.service' ]
+  when: "'master' in group_names"
+
+- name:  RM
+  file:
+    state: absent
+    path: "{{ KHW_CONFIG }}"
+
+- name:  RM
+  file:
+    state: absent
+    path: /var/lib/containerd/

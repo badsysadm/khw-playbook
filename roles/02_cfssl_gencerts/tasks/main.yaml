@@ -1,0 +1,8 @@
+- name: Install cfssl
+  include: 01_cfssl_install.yaml
+- name: Get CA from ansible host
+  include: 02_ca_get.yaml
+- name: Generating csr-files
+  include: 03_csr_gen.yaml
+- name: Generating certificates
+  include: 04_certs_gen.yaml

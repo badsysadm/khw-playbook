@@ -1,0 +1,5 @@
+- name: Download binaries for node
+  include: 01_binaries_download.yaml
+- name: Download binaries for master
+  include: 02_binaries_download_master.yaml
+  when: "'master' in {{ group_names }}"

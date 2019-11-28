@@ -1,0 +1,43 @@
+- name: daemon-reload
+  command: systemctl daemon-reload
+
+- name: iptables flush
+  iptables:
+    chain: '{{ item }}'
+    flush: yes
+  with_items: [ 'INPUT', 'FORWARD', 'OUTPUT' ]
+
+- name: iptables flush mangle
+  iptables:
+    table: mangle
+    chain: '{{ item }}'
+    flush: yes
+  with_items: [ 'INPUT', 'FORWARD', 'OUTPUT' ]
+
+- name: iptables flush nat
+  iptables:
+    table: nat
+    chain: '{{ item }}'
+    flush: yes
+  with_items: [ 'INPUT', 'OUTPUT' ]
+
+- name: start containerd
+  systemd:
+    name: containerd.service
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+
+- name: start kube-proxy
+  systemd:
+    name: kube-proxy.service
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+
+- name: start kubelet
+  systemd:
+    name: kubelet.service
+    daemon_reload: yes
+    state: restarted
+    enabled: yes

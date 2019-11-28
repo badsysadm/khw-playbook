@@ -1,0 +1,37 @@
+##### KUBE-CONTROLLER-MANAGER CONFIG
+- debug:
+    msg: "generating kube-controller-manager configs"
+- name: kubectl config set-cluster
+  shell: kubectl config set-cluster {{ KHW_CERT_OU }} --certificate-authority="{{ KHW_CA }}ca.pem" --embed-certs=true --server=https://{{ KHW_PUBLIC_API_DOMAIN }}:{{ KHW_PUBLIC_API_PORT }} --kubeconfig="{{ KHW_CONFIG }}kube-controller-manager.kubeconfig"
+- name: kubectl config set-credentials
+  shell: kubectl config set-credentials system:kube-controller-manager --client-certificate="{{ KHW_KEY }}kube-controller-manager.pem" --client-key="{{ KHW_KEY }}kube-controller-manager-key.pem" --embed-certs=true --kubeconfig="{{ KHW_CONFIG }}kube-controller-manager.kubeconfig"
+- name: kubectl config set-context
+  shell: kubectl config set-context default --cluster={{ KHW_CERT_OU }} --user=system:kube-controller-manager --kubeconfig="{{ KHW_CONFIG }}kube-controller-manager.kubeconfig"
+- name: kubectl config use-context default
+  shell: kubectl config use-context default --kubeconfig="{{ KHW_CONFIG }}kube-controller-manager.kubeconfig"
+
+##### KUBE-SCHEDULER CONFIG
+- debug:
+    msg: "generating kube-scheduler configs"
+- name: kubectl config set-cluster
+  shell: kubectl config set-cluster {{ KHW_CERT_OU }} --certificate-authority="{{ KHW_CA }}ca.pem" --embed-certs=true --server=https://{{ KHW_PUBLIC_API_DOMAIN }}:{{ KHW_PUBLIC_API_PORT }} --kubeconfig="{{ KHW_CONFIG }}kube-scheduler.kubeconfig"
+- name: kubectl config set-credentials
+  shell: kubectl config set-credentials system:kube-scheduler --client-certificate="{{ KHW_KEY }}kube-scheduler.pem" --client-key="{{ KHW_KEY }}kube-scheduler-key.pem" --embed-certs=true --kubeconfig="{{ KHW_CONFIG }}kube-scheduler.kubeconfig"
+- name: kubectl config set-context
+  shell: kubectl config set-context default --cluster={{ KHW_CERT_OU }} --user=system:kube-scheduler --kubeconfig="{{ KHW_CONFIG }}kube-scheduler.kubeconfig"
+- name: kubectl config use-context
+  shell: kubectl config use-context default --kubeconfig="{{ KHW_CONFIG }}kube-scheduler.kubeconfig"
+
+- template:
+    src: "configs/kube-scheduler.yaml"
+    dest: "{{ KHW_CONFIG }}kube-scheduler.yaml"
+    owner: root
+    group: root
+    mode: 0644
+
+- template:
+    src: "configs/haproxy.cfg"
+    dest: "/etc/haproxy/haproxy.cfg"
+    owner: root
+    group: root
+    mode: 0644

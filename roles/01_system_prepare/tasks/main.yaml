@@ -1,0 +1,73 @@
+- name: Disable SWAP
+  shell: swapoff -a
+
+- name: Commend SWAP in fstab
+  shell: sed -i.bak -r 's/(.+ swap .+)/#\1/' /etc/fstab
+
+- sysctl:
+    name: vm.oom_kill_allocating_task
+    value: '2'
+    state: present
+
+- sysctl:
+    name: vm.oom_dump_tasks
+    value: '1'
+    state: present
+
+- sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: '1'
+    state: present
+
+- sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: '1'
+    state: present
+
+- sysctl:
+    name: fs.file-max
+    value: '2097152'
+    state: present
+
+- name: Install packages for deb
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - libseccomp2
+    - aufs-dkms
+    - socat
+    - conntrack
+    - ipset
+  when: ansible_facts['distribution'] == "Debian"
+
+- name: Install packages for yum
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - libseccomp
+    - socat
+    - conntrack
+    - ipset
+  when: ansible_facts['distribution'] == "CentOS"
+
+- name: Install packages for deb
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - haproxy
+  when: (ansible_facts['distribution'] == "Debian" and 'master' in group_names )
+
+- name: Install packages for yum
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - haproxy
+  when: (ansible_facts['distribution'] == "CentOS" and 'master' in group_names)

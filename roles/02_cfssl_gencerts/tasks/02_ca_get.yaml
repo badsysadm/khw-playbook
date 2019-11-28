@@ -1,0 +1,25 @@
+- file:
+    path: "{{ KHW_CA }}"
+    state: directory
+    mode: 0755
+- name: Get CA
+  copy:
+    src: "{{ KHW_LOCAL_CFSSL }}ca/ca.pem"
+    dest: "{{ KHW_CA }}ca.pem"
+    owner: root
+    group: root
+    mode: 0644
+- name: Get CA key
+  copy:
+    src: "{{ KHW_LOCAL_CFSSL }}ca/ca-key.pem"
+    dest: "{{ KHW_CA }}ca-key.pem"
+    owner: root
+    group: root
+    mode: 0644
+- name: Get CA config
+  copy:
+    src: "{{ KHW_LOCAL_CFSSL }}ca/ca-config.json"
+    dest: "{{ KHW_CA }}ca-config.json"
+    owner: root
+    group: root
+    mode: 0644

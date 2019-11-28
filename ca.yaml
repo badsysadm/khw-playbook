@@ -1,0 +1,4 @@
+- hosts: localhost
+  become: true
+  roles:
+    - 00_cfssl_genca

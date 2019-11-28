@@ -1,15 +1,12 @@
-- hosts: localhost
-  become: true
-  roles:
-    - cfssl
+#- hosts: localhost
+#  become: true
+#  roles:
+#    - 00_cfssl_genca
 
 - hosts: all
   become: true
   roles:
-    - prepare
-    - certs
-    - etcd
-    - kubectl
-    - kubeinit
-    - configs
-    - kube-configure
+    - 01_system_prepare
+    - 02_cfssl_gencerts
+    - 04_kubernetes_init
+    - 05_kubernetes_setconfigs

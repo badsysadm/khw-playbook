@@ -1,0 +1,26 @@
+- name: daemon-reload
+  command: systemctl daemon-reload
+
+- name: start kube-apiserver
+  systemd:
+    name: kube-apiserver.service
+    state: restarted
+    enabled: yes 
+
+- name: start kube-controller-manager
+  systemd:
+    name: kube-controller-manager.service
+    state: restarted
+    enabled: yes 
+
+- name: start kube-scheduler
+  systemd:
+    name: kube-scheduler.service
+    state: restarted
+    enabled: yes
+
+- name: start haproxy
+  systemd:
+    name: haproxy.service
+    state: restarted
+    enabled: yes

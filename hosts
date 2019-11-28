@@ -1,2 +1,9 @@
+[master]
+oc-master01.cgntv.arch ansible_user=root ansible_host=10.120.110.22 ansible_port=22 KHW_NET_CIDR=10.0.0.0 KHW_NET_CIDR_MASK=16
+oc-node01.cgntv.arch ansible_user=root ansible_host=10.120.110.23 ansible_port=22 KHW_NET_CIDR=10.1.0.0 KHW_NET_CIDR_MASK=16
+oc-node02.cgntv.arch ansible_user=root ansible_host=10.120.110.24 ansible_port=22 KHW_NET_CIDR=10.2.0.0 KHW_NET_CIDR_MASK=16
+[node]
 kw110-21.arch ansible_user=root ansible_host=10.120.110.21 ansible_port=22 KHW_NET_CIDR=10.5.0.0 KHW_NET_CIDR_MASK=16
 kw110-25.arch ansible_user=root ansible_host=10.120.110.25 ansible_port=22 KHW_NET_CIDR=10.6.0.0 KHW_NET_CIDR_MASK=16
+kw110-27 ansible_user=root ansible_host=10.120.110.27 ansible_port=22 KHW_NET_CIDR=10.7.0.0 KHW_NET_CIDR_MASK=16
+kw110-30 ansible_user=root ansible_host=10.120.110.30 ansible_port=22 KHW_NET_CIDR=10.3.0.0 KHW_NET_CIDR_MASK=16

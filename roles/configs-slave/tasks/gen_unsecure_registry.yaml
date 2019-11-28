@@ -1,9 +1,0 @@
-- name: lol
-  shell: "openssl s_client -showcerts -connect $(echo $KHW_UNSECURE_REGISTRY | sed -E -e 's|(.*)://||g') </dev/null 2>/dev/null | openssl x509 -outform PEM > /etc/pki/ca-trust/source/anchors/AAA_$(echo $KHW_UNSECURE_REGISTRY | sed -E -e 's|(.*)://||g' | sed -E -e 's|:(.*)||g').crt"
-  environment:
-    KHW_UNSECURE_REGISTRY: "{{ KHW_UNSECURE_REGISTRY }}"
-  when: KHW_UNSECURE_REGISTRY != ""
-- raw: update-ca-trust force-enable
-  when: KHW_UNSECURE_REGISTRY != ""
-- raw: update-ca-trust extract
-  when: KHW_UNSECURE_REGISTRY != ""

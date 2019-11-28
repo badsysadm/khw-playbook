@@ -1,0 +1,63 @@
+- name: Download runc
+  get_url:
+    url: https://github.com/opencontainers/runc/releases/download/v{{ RUNC_VERSION }}/runc.amd64
+    dest: "{{ KHW_PREFIX }}bin/runc"
+    mode: 0755
+
+- name: Download runsc
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-the-hard-way/runsc
+    dest: "{{ KHW_PREFIX }}bin/runsc"
+    mode: 0755
+
+- name: Create firectory for cni
+  file:
+    path: "/opt/cni/bin"
+    state: directory
+
+- name: Downlad cni-plugins
+  unarchive:
+    src: https://github.com/containernetworking/plugins/releases/download/v{{ CNI_PLUGINS_VERSION }}/cni-plugins-amd64-v{{ CNI_PLUGINS_VERSION }}.tgz
+    dest: "/opt/cni/bin/"
+    remote_src: yes
+    mode: 0755
+
+- name: Create tmp directory for cfssl
+  file:
+    path: "{{ KHW_PREFIX }}tmp/containerd/"
+    state: directory
+
+- name: Downlad containerd
+  unarchive:
+    src: https://github.com/containerd/containerd/releases/download/v{{ CONTAINERD_VERSION }}/containerd-{{ CONTAINERD_VERSION }}.linux-amd64.tar.gz
+    dest: "{{ KHW_PREFIX }}tmp/containerd/"
+    remote_src: yes
+    mode: 0755
+
+- name: Downlad crictl
+  unarchive:
+    src: https://github.com/kubernetes-incubator/cri-tools/releases/download/v{{ CRICTL_VERSION }}/crictl-v{{ CRICTL_VERSION }}-linux-amd64.tar.gz
+    dest: "{{ KHW_PREFIX }}tmp/containerd/bin/"
+    remote_src: yes
+    mode: 0755
+
+- name: Copy containerd bin from tmp to bin
+  raw: cp -vf {{ KHW_PREFIX }}tmp/containerd/bin/* {{ KHW_PREFIX }}bin/
+
+- name: Download kubectl
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v{{ KUBE_VERSION }}/bin/linux/amd64/kubectl
+    dest: "{{ KHW_PREFIX }}bin/kubectl"
+    mode: 0755
+
+- name: Download kube-proxy
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v{{ KUBE_VERSION }}/bin/linux/amd64/kube-proxy
+    dest: "{{ KHW_PREFIX }}bin/kube-proxy"
+    mode: 0755
+
+- name: Download kubelet
+  get_url:
+    url: https://storage.googleapis.com/kubernetes-release/release/v{{ KUBE_VERSION }}/bin/linux/amd64/kubelet
+    dest: "{{ KHW_PREFIX }}bin/kubelet"
+    mode: 0755
