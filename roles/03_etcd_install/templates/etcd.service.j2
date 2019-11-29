@@ -1,0 +1,30 @@
+[Unit]
+Description=etcd
+Documentation=https://github.com/coreos
+
+[Service]
+ExecStart={{ KHW_PREFIX }}bin/etcd \
+  --name={{ inventory_hostname }} \
+  --data-dir=/var/lib/etcd_data \
+  --cert-file={{ KHW_KEY }}kubernetes.pem \
+  --key-file={{ KHW_KEY }}kubernetes-key.pem \
+  --trusted-ca-file={{ KHW_CA }}ca.pem \
+  --peer-ca-file={{ KHW_CA }}ca.pem \
+  --peer-cert-file={{ KHW_KEY }}kubernetes.pem \
+  --peer-key-file={{ KHW_KEY }}kubernetes-key.pem \
+  --peer-client-cert-auth=true \
+  --peer-trusted-ca-file={{ KHW_CA }}ca.pem \
+  --initial-cluster-token=khw-cluster \
+  --initial-cluster-state=new \
+  --initial-cluster {% for host in groups['master'] %}{{hostvars[host]['inventory_hostname']}}=https://{{ hostvars[host]['ansible_host'] }}:2380{% if not loop.last %},{% endif %}{% endfor %}  \
+  --initial-advertise-peer-urls https://{{ ansible_host }}:2380 \
+  --listen-peer-urls https://{{ ansible_host }}:2380 \
+  --listen-client-urls=https://{{ ansible_host }}:2379,https://127.0.0.1:2379 \
+  --advertise-client-urls=https://{{ ansible_host }}:2379
+
+Restart=on-failure
+RestartSec=5
+Type=notify
+
+[Install]
+WantedBy=multi-user.target

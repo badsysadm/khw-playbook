@@ -1,0 +1,4 @@
+- hosts: master
+  become: true
+  roles:
+    - 03_etcd_install

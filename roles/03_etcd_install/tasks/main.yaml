@@ -1,0 +1,33 @@
+- file:
+    path: /var/lib/etcd_data
+    state: directory
+    mode: 0755
+
+- file:
+    path: /tmp/etcd
+    state: directory
+    mode: 0755
+
+- name: Download etcd to tmp directory
+  unarchive:
+    src: "https://github.com/coreos/etcd/releases/download/v{{ ETCD_VERSION }}/etcd-v{{ ETCD_VERSION }}-{{ KHW_ARCH }}.tar.gz"
+    dest: "/tmp/etcd"
+    remote_src: yes
+    mode: 0755
+
+- name: Move etcd binaries
+  shell: "mv /tmp/etcd/etcd-v{{ ETCD_VERSION }}-{{ KHW_ARCH }}/etcd* {{ KHW_PREFIX }}bin/"
+
+- template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: start etcd
+  systemd:
+    name: etcd.service
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
