@@ -1,3 +1,5 @@
+[metrics]
+  address = "0.0.0.0:1365"
 [plugins]
   [plugins.cri.containerd]
     snapshotter = "overlayfs"
