@@ -4,6 +4,9 @@
 - name: Commend SWAP in fstab
   shell: sed -i.bak -r 's/(.+ swap .+)/#\1/' /etc/fstab
 
+- name: tmp fix
+  shell: modprobe br_netfilter
+
 - sysctl:
     name: vm.oom_kill_allocating_task
     value: '2'
