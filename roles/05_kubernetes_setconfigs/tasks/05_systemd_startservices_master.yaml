@@ -22,5 +22,5 @@
 - name: start haproxy
   systemd:
     name: haproxy.service
-    state: restarted
+    state: stopped
     enabled: yes
