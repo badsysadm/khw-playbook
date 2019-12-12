@@ -3,18 +3,18 @@
 
 - name:  Create configs for master
   include: 02_configs_gen_master.yaml
-  when: "'master' in {{ group_names }}"
+  when: "'master' in group_names"
 
 - name: Create systemd services for node
   include: 03_systemd_genservices.yaml
 
 - name: Create systemd services for master
   include: 04_systemd_genservices_master.yaml
-  when: "'master' in {{ group_names }}"
+  when: "'master' in group_names"
 
 - name: Start systemd services for master
   include: 05_systemd_startservices_master.yaml
-  when: "'master' in {{ group_names }}"
+  when: "'master' in group_names"
 
 - name: Start systemd services for node
   include: 06_systemd_startservices.yaml
