@@ -14,7 +14,7 @@ ExecStart={{ KHW_PREFIX }}bin/kube-apiserver \
   --authorization-mode=Node,RBAC \
   --bind-address={{ KHW_CONFIG_BIND }} \
   --client-ca-file={{ KHW_CA }}ca.pem \
-  --enable-admission-plugins=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \
+  --enable-admission-plugins=NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \
   --enable-swagger-ui=false \
   --etcd-cafile={{ KHW_CA }}ca.pem \
   --etcd-certfile={{ KHW_KEY }}kubernetes.pem \
@@ -25,7 +25,7 @@ ExecStart={{ KHW_PREFIX }}bin/kube-apiserver \
   --kubelet-client-certificate={{ KHW_KEY }}kubernetes.pem \
   --kubelet-client-key={{ KHW_KEY }}kubernetes-key.pem \
   --kubelet-https=true \
-  --runtime-config=api/all \
+  --runtime-config=api/all=true \
   --service-account-key-file={{ KHW_CA }}ca-key.pem \
   --service-cluster-ip-range={{ KHW_NET_SVC }}/{{ KHW_NET_SVC_MASK }} \
   --service-node-port-range=30000-32767 \

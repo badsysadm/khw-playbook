@@ -1,12 +1,12 @@
-#- hosts: localhost
-#  become: true
-#  roles:
-#    - 00_cfssl_genca
+- hosts: localhost
+  roles:
+    - 00_cfssl_genca
 
 - hosts: all
   become: true
   roles:
     - 01_system_prepare
     - 02_cfssl_gencerts
+    - 03_etcd_install
     - 04_kubernetes_init
     - 05_kubernetes_setconfigs
